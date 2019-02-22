@@ -1,0 +1,113 @@
+<!doctype html>
+
+<style>
+    body{
+        background: rgb(88, 214, 236);
+    }
+
+    #canvasDiv, #infoDiv, #controlDiv{
+        width: 800px;
+        margin: auto;
+    }
+
+    #controlDiv{
+        display: block;
+        background: #fff;
+        border-radius: 10px;
+        margin: 30px auto;
+        padding: 10px;
+        text-align: center;
+        font-family: sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        font-family: sans-serif;
+        color: rgb(247, 231, 8);
+        font-size: 3rem;
+    }
+
+    #draw{
+        background: #fff;
+        border-radius: 10px;
+    }
+
+    div {
+        width: 100%;
+        margin: auto;
+    }
+</style>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Canvas Playground</title>
+    </head>
+
+    <body>
+        <div id = "infoDiv">
+            <h1>Canvas Playground</h1>
+        </div>
+
+        <div id="controlDiv">
+            <label for = "brushWidth">Brush Width:</label>
+            <input id = "brushWidth" type="range" min = "2" max = "50" default = "20">
+
+            <label for = "color">Colour:</label>
+            <input id="colorPicker" type="text"> 
+
+        </div>
+
+        <div id="canvasDiv">
+            <canvas id="draw" width="800" height="400"></canvas>
+        </div> 
+
+        <script>
+            const canvas = document.querySelector('#draw');
+            const context = canvas.getContext('2d');
+            const widthSlider = document.querySelector('#brushWidth');
+            const color = document.querySelector('#colorPicker');
+
+            context.lineJoin = 'round';
+            context.lineCap = 'round';
+
+
+            let lastX, lastY = 0;
+            let isDrawing = false;
+
+            function draw(e){
+                if(!isDrawing) return;
+                
+                context.beginPath();
+                context.moveTo(lastX, lastY);
+                context.lineTo(e.offsetX, e.offsetY);
+                context.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+
+                
+            }            
+
+            canvas.addEventListener('mousedown', (e) => {
+                                isDrawing = true;
+                                [lastX, lastY] = [e.offsetX, e.offsetY];
+                            });
+
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mouseout', () => isDrawing = false);
+
+            widthSlider.addEventListener('change', () => {
+                context.lineWidth = widthSlider.value;
+            });
+
+            colorPicker.addEventListener('keydown', (e) => {
+                if(e.keyCode === 13){
+                context.strokeStyle = colorPicker.value;
+                
+                }console.log(context.strokeStyle);
+            });
+        </script>
+
+    </body>
+
+</html>
